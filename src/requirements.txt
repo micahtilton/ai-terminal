@@ -1,7 +1,0 @@
-pyinstaller
-pyinstaller-hooks-contrib
-PyYAML
-langchain
-langchain-openai
-pydantic<2
-langchain-ollama
