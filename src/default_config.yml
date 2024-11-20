@@ -1,0 +1,10 @@
+n: 1
+type: "openai"
+query_prompt: |
+  Using {shell}, show me {n} different ways that I achieve this action.
+  The command MUST be in one line.
+  Do NOT explain your answers.
+  You MUST use markdown
+
+  {query}
+model: "gpt-4o-mini"
