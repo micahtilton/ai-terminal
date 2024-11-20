@@ -1,4 +1,1 @@
-src/build
-src/dist
-src/venv
-src/ask.spec
+venv
