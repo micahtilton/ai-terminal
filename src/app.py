@@ -1,6 +1,7 @@
 import os
 import argparse
 from openai import OpenAI
+import ollama
 import yaml
 import re
 
@@ -41,21 +42,32 @@ def main():
         print("OPENAI_API_KEY environment variable not found")
         return
 
-    client = OpenAI(api_key=openai_api_key)
-    message = client.chat.completions.create(
-        messages=[
-            {
-                "role": "system", "content": config["query_prompt"]
-            },
-            {
-                "role": "user",
-                "content": generate_query(args.query, config),
-            }
-        ],
-        model="gpt-4o-mini"
-    )
+    message = None
+    if config["type"] == "openai":
+        client = OpenAI(api_key=openai_api_key)
+        message = client.chat.completions.create(
+            model=config["model"],
+            messages=[
+                {
+                    "role": "user",
+                    "content": generate_query(args.query, config),
+                }
+            ]
+        )        
+        message = message.choices[0].message.content
+    elif config["type"] == "ollama":
+        message = ollama.chat(
+            model=config["model"],
+            messages=[
+                {
+                    "role": "user",
+                    "content": generate_query(args.query, config),
+                }
+            ]
+        )
+        message = message['message']['content']
 
-    commands = parse_markdown(message.choices[0].message.content, config["shell"])
+    commands = parse_markdown(message, config["shell"])
 
     if args.query:
         print("\n".join(commands))
